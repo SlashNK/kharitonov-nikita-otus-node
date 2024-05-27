@@ -1,6 +1,6 @@
-import fs from 'fs/promises';
-import path from 'path';
-import { argv } from 'process';
+import fs from "fs/promises";
+import path from "path";
+import { argv } from "process";
 
 const presentFilesAsTree = async (rootPath, depth, currentDepth = 0) => {
   try {
@@ -10,7 +10,13 @@ const presentFilesAsTree = async (rootPath, depth, currentDepth = 0) => {
     const dirents = await fs.readdir(rootPath, { withFileTypes: true });
     const items = [];
     for (const dirent of dirents) {
-      items.push(await presentFilesAsTree(path.join(rootPath, dirent.name), depth, currentDepth + 1));
+      items.push(
+        await presentFilesAsTree(
+          path.join(rootPath, dirent.name),
+          depth,
+          currentDepth + 1
+        )
+      );
     }
     return { name, items };
   } catch (err) {
@@ -24,26 +30,30 @@ const printTree = (tree, lvl = 0) => {
   if (Array.isArray(items) && items.length > 0) {
     const isLast = (index) => index === items.length - 1;
     res = items.reduce((acc, item, index) => {
-      return `${acc}\n${lvl > 0 ? `│${" ".repeat(lvl)}` : ""}${isLast(index) ? "└" : "├"}── ${printTree(item, lvl + 1)}`;
+      return `${acc}\n${lvl > 0 ? `│${" ".repeat(lvl)}` : ""}${
+        isLast(index) ? "└" : "├"
+      }── ${printTree(item, lvl + 1)}`;
     }, res);
   }
   return res;
 };
 
-
 const args = argv.slice(2);
 const dirPath = args[0];
-const depthIndex = args.indexOf('-d');
-const depth = depthIndex !== -1 && args[depthIndex + 1] ? Number(args[depthIndex + 1]) : Infinity;
-console.log(depth);
+const depthFlags = ['-d', '--depth'];
+const depthIndex = args.findIndex(arg => depthFlags.includes(arg));
+const depth =
+  depthIndex !== -1 && args[depthIndex + 1]
+    ? Number(args[depthIndex + 1])
+    : Infinity;
 if (!dirPath) {
-  console.error('Path was not provided');
+  console.error("Path was not provided");
   process.exit(0);
 }
 presentFilesAsTree(path.resolve(dirPath), depth).then((res) => {
   if (res) {
     console.log(printTree(res));
   } else {
-    console.error('Could not represent files as tree');
+    console.error("Could not represent files as tree");
   }
 });
