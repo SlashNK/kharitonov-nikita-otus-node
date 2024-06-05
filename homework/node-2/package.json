@@ -1,0 +1,11 @@
+{
+    "name": "streams-file-reader",
+    "version": "1.0.0",
+    "description": "Reads file usings node streams",
+    "main": "./streams.js",
+    "scripts": {
+      "start": "node ./streams.js"
+    },
+    "type": "module"
+  }
+  
