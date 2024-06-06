@@ -9,7 +9,7 @@
  ### Пример оформления занятия **Модуль 4 Тема: 26 Работа с PostgreSQL и TypeORM**
    
 
-    module-1 (branch: module-1)/ 
-    ├─ seminar-1 Events / 
+    module-4 (branch: module-4)/ 
+    ├─ S26-postgre-sql-and-type-orm / 
     │ ├─ playground / (Сниппеты, live-coding, и т.д.)
     │ ├─ M4S26.postgre-sql-and-type-orm.md (Конспект)
