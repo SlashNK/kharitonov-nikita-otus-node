@@ -1,0 +1,6 @@
+<html>
+<title>#{title}</title>
+<body>
+Hello, <span style="color:red">#{username}!!!!!</span>
+</body>
+</html>
