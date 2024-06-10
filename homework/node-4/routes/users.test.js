@@ -12,12 +12,12 @@ describe('User API CRUD operations', () => {
   it('should create a new user', async () => {
     const response = await request(app)
       .post('/api/users')
-      .send({ name: 'John Doe', email: 'john@example.com' })
+      .send({ username: 'New User', email: 'user@example.com' })
 
     expect(response.status).toBe(201)
     expect(response.body).toHaveProperty('id')
-    expect(response.body.name).toBe('John Doe')
-    expect(response.body.email).toBe('john@example.com')
+    expect(response.body.username).toBe('New User')
+    expect(response.body.email).toBe('user@example.com')
 
     userId = response.body.id
   })
@@ -34,19 +34,19 @@ describe('User API CRUD operations', () => {
 
     expect(response.status).toBe(200)
     expect(response.body).toHaveProperty('id', userId)
-    expect(response.body.name).toBe('John Doe')
-    expect(response.body.email).toBe('john@example.com')
+    expect(response.body.name).toBe('New User')
+    expect(response.body.email).toBe('user@example.com')
   })
 
   it('should update a user by ID', async () => {
     const response = await request(app)
       .put(`/api/users/${userId}`)
-      .send({ name: 'Jane Doe', email: 'jane@example.com' })
+      .send({ name: 'Updated User', email: 'user-updated@example.com' })
 
     expect(response.status).toBe(200)
     expect(response.body).toHaveProperty('id', userId)
-    expect(response.body.name).toBe('Jane Doe')
-    expect(response.body.email).toBe('jane@example.com')
+    expect(response.body.name).toBe('Updated User')
+    expect(response.body.email).toBe('user-updated@example.com')
   })
 
   it('should delete a user by ID', async () => {

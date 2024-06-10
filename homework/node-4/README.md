@@ -27,8 +27,6 @@
     
 -   **email**: Строка
     
--   **password**: Строка
-    
 -   **created_at**: Timestamp
     
 -   **updated_at**: Timestamp
