@@ -1,4 +1,4 @@
-# Training Logger API
+# Workout Logger API
 
 ## О сервисе
 
