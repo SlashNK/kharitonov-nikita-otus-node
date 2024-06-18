@@ -1,11 +1,17 @@
 {
-    "name": "tree",
-    "version": "1.0.0",
-    "description": "Build file-tree representation of path directory.",
-    "main": "./tree.js",
-    "scripts": {
-      "start": "node ./tree.js"
-    },
-    "type": "module"
+  "name": "tree",
+  "version": "1.0.0",
+  "description": "Build file-tree representation of path directory.",
+  "main": "./tree.js",
+  "scripts": {
+    "start": "node ./tree.js",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --config ./jest.config.js",
+    "coverage": "node --experimental-vm-modules node_modules/jest/bin/jest.js --config ./jest.config.js --coverage"
+  },
+  "type": "module",
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "mock-fs": "^5.2.0",
+    "typescript": "^5.4.5"
   }
-  
+}
