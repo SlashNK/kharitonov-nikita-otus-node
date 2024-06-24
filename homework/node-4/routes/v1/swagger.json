@@ -1,0 +1,795 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Workout API",
+    "version": "1.0.0",
+    "description": "API for managing workout users, exercises, workout blocks, workout templates, and workout sessions."
+  },
+  "basePath": "/v1",
+  "paths": {
+    "/users": {
+      "get": {
+        "summary": "Get all users",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "type": "integer",
+            "description": "Page number for pagination"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "type": "integer",
+            "description": "Number of items per page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of users",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/User"
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new user",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "The created user",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "400": {
+            "description": "Validation failed"
+          }
+        }
+      }
+    },
+    "/users/{id}": {
+      "get": {
+        "summary": "Get a user by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The user",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update a user by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The updated user",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a user by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "User deleted"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      }
+    },
+    "/exercises": {
+      "get": {
+        "summary": "Get all exercises",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "type": "integer",
+            "description": "Page number for pagination"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "type": "integer",
+            "description": "Number of items per page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of exercises",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Exercise"
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new exercise",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Exercise"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "The created exercise",
+            "schema": {
+              "$ref": "#/definitions/Exercise"
+            }
+          },
+          "400": {
+            "description": "Validation failed"
+          }
+        }
+      }
+    },
+    "/exercises/{id}": {
+      "get": {
+        "summary": "Get an exercise by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The exercise",
+            "schema": {
+              "$ref": "#/definitions/Exercise"
+            }
+          },
+          "404": {
+            "description": "Exercise not found"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update an exercise by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Exercise"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The updated exercise",
+            "schema": {
+              "$ref": "#/definitions/Exercise"
+            }
+          },
+          "404": {
+            "description": "Exercise not found"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete an exercise by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Exercise deleted"
+          },
+          "404": {
+            "description": "Exercise not found"
+          }
+        }
+      }
+    },
+    "/workout-blocks": {
+      "get": {
+        "summary": "Get all workout blocks",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "type": "integer",
+            "description": "Page number for pagination"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "type": "integer",
+            "description": "Number of items per page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of workout blocks",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/WorkoutBlock"
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new workout block",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/WorkoutBlock"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "The created workout block",
+            "schema": {
+              "$ref": "#/definitions/WorkoutBlock"
+            }
+          },
+          "400": {
+            "description": "Validation failed"
+          }
+        }
+      }
+    },
+    "/workout-blocks/{id}": {
+      "get": {
+        "summary": "Get a workout block by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The workout block",
+            "schema": {
+              "$ref": "#/definitions/WorkoutBlock"
+            }
+          },
+          "404": {
+            "description": "Workout block not found"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update a workout block by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/WorkoutBlock"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The updated workout block",
+            "schema": {
+              "$ref": "#/definitions/WorkoutBlock"
+            }
+          },
+          "404": {
+            "description": "Workout block not found"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a workout block by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Workout block deleted"
+          },
+          "404": {
+            "description": "Workout block not found"
+          }
+        }
+      }
+    },
+    "/workout-templates": {
+      "get": {
+        "summary": "Get all workout templates",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "type": "integer",
+            "description": "Page number for pagination"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "type": "integer",
+            "description": "Number of items per page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of workout templates",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/WorkoutTemplate"
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new workout template",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/WorkoutTemplate"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "The created workout template",
+            "schema": {
+              "$ref": "#/definitions/WorkoutTemplate"
+            }
+          },
+          "400": {
+            "description": "Validation failed"
+          }
+        }
+      }
+    },
+    "/workout-templates/{id}": {
+      "get": {
+        "summary": "Get a workout template by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The workout template",
+            "schema": {
+              "$ref": "#/definitions/WorkoutTemplate"
+            }
+          },
+          "404": {
+            "description": "Workout template not found"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update a workout template by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/WorkoutTemplate"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The updated workout template",
+            "schema": {
+              "$ref": "#/definitions/WorkoutTemplate"
+            }
+          },
+          "404": {
+            "description": "Workout template not found"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a workout template by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Workout template deleted"
+          },
+          "404": {
+            "description": "Workout template not found"
+          }
+        }
+      }
+    },
+    "/workout-sessions": {
+      "get": {
+        "summary": "Get all workout sessions",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "type": "integer",
+            "description": "Page number for pagination"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "type": "integer",
+            "description": "Number of items per page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of workout sessions",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/WorkoutSession"
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new workout session",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/WorkoutSession"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "The created workout session",
+            "schema": {
+              "$ref": "#/definitions/WorkoutSession"
+            }
+          },
+          "400": {
+            "description": "Validation failed"
+          }
+        }
+      }
+    },
+    "/workout-sessions/{id}": {
+      "get": {
+        "summary": "Get a workout session by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The workout session",
+            "schema": {
+              "$ref": "#/definitions/WorkoutSession"
+            }
+          },
+          "404": {
+            "description": "Workout session not found"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update a workout session by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/WorkoutSession"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The updated workout session",
+            "schema": {
+              "$ref": "#/definitions/WorkoutSession"
+            }
+          },
+          "404": {
+            "description": "Workout session not found"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a workout session by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Workout session deleted"
+          },
+          "404": {
+            "description": "Workout session not found"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "User": {
+      "type": "object",
+      "required": [
+        "username",
+        "email"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        }
+      }
+    },
+    "Exercise": {
+      "type": "object",
+      "required": [
+        "name",
+        "description",
+        "type"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        }
+      }
+    },
+    "WorkoutBlock": {
+      "type": "object",
+      "required": [
+        "name",
+        "exercises"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "exercises": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "WorkoutTemplate": {
+      "type": "object",
+      "required": [
+        "name",
+        "workout_blocks"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "workout_blocks": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "WorkoutSession": {
+      "type": "object",
+      "required": [
+        "user_id",
+        "workout_template_id",
+        "exercises",
+        "started_at",
+        "ended_at"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "user_id": {
+          "type": "string"
+        },
+        "workout_template_id": {
+          "type": "string"
+        },
+        "exercises": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "exercise_id": {
+                "type": "string"
+              },
+              "sets": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "weight": {
+                      "type": "number"
+                    },
+                    "reps": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              },
+              "notes": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "started_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "ended_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    }
+  }
+}
