@@ -1,7 +1,7 @@
 const { generateId, paginateArray } = require('./utils')
 const { DEFAULT_QUERY_LIMIT, DEFAULT_QUERY_PAGE } = require('./constants')
 
-describe.skip('generateId', () => {
+describe('generateId', () => {
   it('should generate a valid UUID', () => {
     const id = generateId()
 
