@@ -81,7 +81,7 @@ describe('Exercise API CRUD operations', () => {
     expect(response.body.type).toBe('strength')
   })
   it('should return 404 when trying to update a non-existent exercise', async () => {
-    const nonExistentId = 'nonExistentId' // Assuming this ID does not exist
+    const nonExistentId = 'nonExistentId'
     const response = await request(app)
       .put(`/api/exercises/${nonExistentId}`)
       .send({
