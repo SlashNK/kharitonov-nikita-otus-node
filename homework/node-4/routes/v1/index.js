@@ -1,7 +1,16 @@
-const express = require('express')
-const usersRouter = require('./users')
-const router = express.Router()
+const express = require("express");
+const { usersApiRouter } = require("./users");
+const { exercisesApiRouter } = require("./exercises");
+const { workoutBlocksApiRouter } = require("./workout-blocks");
+const { workoutTemplatesApiRouter } = require("./workout-templates");
+const { workoutSessionsApiRouter } = require("./workout-sessions");
 
-router.get('/', usersRouter)
+const router = express.Router();
 
-module.exports = router
+router.use("/users", usersApiRouter);
+router.use("/exercises", exercisesApiRouter);
+router.use("/workout-blocks", workoutBlocksApiRouter);
+router.use("/workout-templates", workoutTemplatesApiRouter);
+router.use("/workout-sessions", workoutSessionsApiRouter);
+
+module.exports = router;
