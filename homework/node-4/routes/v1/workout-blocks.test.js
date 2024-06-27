@@ -2,6 +2,10 @@ const request = require('supertest')
 const express = require('express')
 const { workoutBlocksApiRouter } = require('./workout-blocks.js')
 const { exercisesApiRouter } = require('./exercises.js')
+const {
+  connectToMongoDB,
+  disconnectFromMongoDB
+} = require('../../shared/mongoose')
 const app = express()
 app.use(express.json())
 app.use('/api/workout-blocks', workoutBlocksApiRouter)
@@ -13,21 +17,30 @@ describe('Workout Block API CRUD operations', () => {
   let exerciseId2
 
   beforeAll(async () => {
+    require('dotenv').config()
+    await connectToMongoDB(
+      process.env.MONGO_DB_ADDRESS || 'mongodb://127.0.0.1:27017/workout-logger'
+    )
     const exercise1 = await request(app).post('/api/exercises').send({
       name: 'Squat',
       description: 'A lower body exercise',
       type: 'strength'
     })
-    exerciseId1 = exercise1.body.id
+    exerciseId1 = exercise1.body._id
 
     const exercise2 = await request(app).post('/api/exercises').send({
       name: 'Bench Press',
       description: 'An upper body exercise',
       type: 'strength'
     })
-    exerciseId2 = exercise2.body.id
+    exerciseId2 = exercise2.body._id
   })
-
+  afterAll(async () => {
+    await request(app).delete(`/api/exercises/${exerciseId1}`)
+    await request(app).delete(`/api/exercises/${exerciseId2}`)
+    await disconnectFromMongoDB()
+    console.log('MongoDB connection closed.')
+  })
   it('should create a new workout block', async () => {
     const response = await request(app)
       .post('/api/workout-blocks')
@@ -36,11 +49,11 @@ describe('Workout Block API CRUD operations', () => {
         exercises: [exerciseId1, exerciseId2]
       })
     expect(response.status).toBe(201)
-    expect(response.body).toHaveProperty('id')
+    expect(response.body).toHaveProperty('_id')
     expect(response.body.name).toBe('Full Body Workout')
     expect(response.body.exercises).toContain(exerciseId1)
     expect(response.body.exercises).toContain(exerciseId2)
-    workoutBlockId = response.body.id
+    workoutBlockId = response.body._id
   })
   it('should handle validation with 400 status', async () => {
     const response = await request(app).post('/api/workout-blocks').send({
@@ -61,7 +74,7 @@ describe('Workout Block API CRUD operations', () => {
       `/api/workout-blocks/${workoutBlockId}`
     )
     expect(response.status).toBe(200)
-    expect(response.body).toHaveProperty('id', workoutBlockId)
+    expect(response.body).toHaveProperty('_id', workoutBlockId)
     expect(response.body.name).toBe('Full Body Workout')
     expect(response.body.exercises).toContain(exerciseId1)
     expect(response.body.exercises).toContain(exerciseId2)
@@ -75,7 +88,7 @@ describe('Workout Block API CRUD operations', () => {
         exercises: [exerciseId1]
       })
     expect(response.status).toBe(200)
-    expect(response.body).toHaveProperty('id', workoutBlockId)
+    expect(response.body).toHaveProperty('_id', workoutBlockId)
     expect(response.body.name).toBe('Updated Full Body Workout')
     expect(response.body.exercises).toContain(exerciseId1)
     expect(response.body.exercises).not.toContain(exerciseId2)
