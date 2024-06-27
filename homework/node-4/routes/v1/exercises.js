@@ -1,63 +1,73 @@
 const express = require('express')
-const { generateId, paginateArray } = require('../../shared/utils')
-
+const { paginateArray } = require('../../shared/utils')
+const Exercise = require('../../models/exercise.model')
 const exercisesApiRouter = express.Router()
-const exercises = []
 exercisesApiRouter.use(express.json())
 
-exercisesApiRouter.get('/', (req, res) => {
+exercisesApiRouter.get('/', async (req, res) => {
   const { page, limit } = req.query
+  const exercises = await Exercise.find()
   res.json(paginateArray(exercises, limit, page))
 })
 
-exercisesApiRouter.get('/:id', (req, res) => {
+exercisesApiRouter.get('/:id', async (req, res) => {
   const { id } = req.params
-  const exercise = exercises.find((exercise) => exercise.id === id)
-  if (!exercise) {
-    return res.status(404).json({ error: 'Exercise not found' })
+  try {
+    const exercise = await Exercise.findById(id)
+    if (!exercise) {
+      return res.status(404).json({ error: 'Exercise not found' })
+    }
+    res.json(exercise)
+  } catch (e) {
+    return res.status(500).json({ error: e })
   }
-  res.json(exercise)
 })
 
-exercisesApiRouter.post('/', (req, res) => {
+exercisesApiRouter.post('/', async (req, res) => {
   const { name, description, type } = req.body
-  if (!name || !description || !type) {
-    return res.status(400).json({ error: 'Validation failed' })
+  try {
+    if (!name || !description || !type) {
+      return res.status(400).json({ error: 'Validation failed' })
+    }
+    const newExercise = new Exercise({ name, description, type })
+    await newExercise.save()
+    res.status(201).json(newExercise)
+  } catch (e) {
+    return res.status(500).json({ error: e })
   }
-  const newExercise = {
-    id: generateId(),
-    name,
-    description,
-    type,
-    created_at: new Date(),
-    updated_at: new Date()
-  }
-  exercises.push(newExercise)
-  res.status(201).json(newExercise)
 })
 
-exercisesApiRouter.put('/:id', (req, res) => {
+exercisesApiRouter.put('/:id', async (req, res) => {
   const { id } = req.params
   const { name, description, type } = req.body
-  const exercise = exercises.find((exercise) => exercise.id === id)
-  if (!exercise) {
-    return res.status(404).json({ error: 'Exercise not found' })
+  try {
+    const exercise = await Exercise.findById(id)
+    if (!exercise) {
+      return res.status(404).json({ error: 'Exercise not found' })
+    }
+    exercise.name = name
+    exercise.description = description
+    exercise.type = type
+    await exercise.save()
+    res.json(exercise)
+  } catch (e) {
+    return res.status(500).json({ error: e })
   }
-  exercise.name = name
-  exercise.description = description
-  exercise.type = type
-  exercise.updated_at = new Date()
-  res.json(exercise)
 })
 
-exercisesApiRouter.delete('/:id', (req, res) => {
+exercisesApiRouter.delete('/:id', async (req, res) => {
   const { id } = req.params
-  const index = exercises.findIndex((exercise) => exercise.id === id)
-  if (index === -1) {
-    return res.status(404).json({ error: 'Exercise not found' })
+  try {
+    const exercise = await Exercise.findById(id)
+    if (!exercise) {
+      return res.status(404).json({ error: 'Exercise not found' })
+    }
+    await Exercise.deleteOne({ _id: exercise._id })
+    res.status(204).send()
+  } catch (e) {
+    console.log(e)
+    return res.status(500).json({ error: e })
   }
-  exercises.splice(index, 1)
-  res.status(204).send()
 })
 
 module.exports = {

@@ -1,59 +1,72 @@
 const express = require('express')
-const { generateId, paginateArray } = require('../../shared/utils')
-
+const { paginateArray } = require('../../shared/utils')
+const WorkoutTemplate = require('../../models/workout-template.model')
 const workoutTemplatesApiRouter = express.Router()
-const workoutTemplates = []
-
 workoutTemplatesApiRouter.use(express.json())
 
-workoutTemplatesApiRouter.get('/', (req, res) => {
+workoutTemplatesApiRouter.get('/', async (req, res) => {
   const { page, limit } = req.query
+  const workoutTemplates = await WorkoutTemplate.find()
   res.json(paginateArray(workoutTemplates, limit, page))
 })
 
-workoutTemplatesApiRouter.get('/:id', (req, res) => {
+workoutTemplatesApiRouter.get('/:id', async (req, res) => {
   const { id } = req.params
-  const workoutTemplate = workoutTemplates.find(
-    (template) => template.id === id
-  )
-  if (!workoutTemplate) {
-    return res.status(404).json({ error: 'Workout template not found' })
+  try {
+    const workoutTemplate = await WorkoutTemplate.findById(id)
+    if (!workoutTemplate) {
+      return res.status(404).json({ error: 'Workout template not found' })
+    }
+    res.json(workoutTemplate)
+  } catch (e) {
+    return res.status(500).json({ error: e })
   }
-  res.json(workoutTemplate)
 })
 
-workoutTemplatesApiRouter.post('/', (req, res) => {
+workoutTemplatesApiRouter.post('/', async (req, res) => {
   const { name, workout_blocks } = req.body
-  if (!name || !Array.isArray(workout_blocks)) {
-    return res.status(400).json({ error: 'Validation failed' })
+  try {
+    if (!name || !workout_blocks) {
+      return res.status(400).json({ error: 'Validation failed' })
+    }
+    const newWorkoutTemplate = new WorkoutTemplate({ name, workout_blocks })
+    await newWorkoutTemplate.save()
+    res.status(201).json(newWorkoutTemplate)
+  } catch (e) {
+    return res.status(500).json({ error: e })
   }
-  const newWorkoutTemplate = { id: generateId(), name, workout_blocks }
-  workoutTemplates.push(newWorkoutTemplate)
-  res.status(201).json(newWorkoutTemplate)
 })
 
-workoutTemplatesApiRouter.put('/:id', (req, res) => {
+workoutTemplatesApiRouter.put('/:id', async (req, res) => {
   const { id } = req.params
   const { name, workout_blocks } = req.body
-  const workoutTemplate = workoutTemplates.find(
-    (template) => template.id === id
-  )
-  if (!workoutTemplate) {
-    return res.status(404).json({ error: 'Workout template not found' })
+  try {
+    const workoutTemplate = await WorkoutTemplate.findById(id)
+    if (!workoutTemplate) {
+      return res.status(404).json({ error: 'Workout template not found' })
+    }
+    workoutTemplate.name = name
+    workoutTemplate.workout_blocks = workout_blocks
+    await workoutTemplate.save()
+    res.json(workoutTemplate)
+  } catch (e) {
+    return res.status(500).json({ error: e })
   }
-  workoutTemplate.name = name
-  workoutTemplate.workout_blocks = workout_blocks
-  res.json(workoutTemplate)
 })
 
-workoutTemplatesApiRouter.delete('/:id', (req, res) => {
+workoutTemplatesApiRouter.delete('/:id', async (req, res) => {
   const { id } = req.params
-  const index = workoutTemplates.findIndex((template) => template.id === id)
-  if (index === -1) {
-    return res.status(404).json({ error: 'Workout template not found' })
+  try {
+    const workoutTemplate = await WorkoutTemplate.findById(id)
+    if (!workoutTemplate) {
+      return res.status(404).json({ error: 'Workout template not found' })
+    }
+    await WorkoutTemplate.deleteOne({ _id: workoutTemplate._id })
+    res.status(204).send()
+  } catch (e) {
+    console.log(e)
+    return res.status(500).json({ error: e })
   }
-  workoutTemplates.splice(index, 1)
-  res.status(204).send()
 })
 
 module.exports = {
