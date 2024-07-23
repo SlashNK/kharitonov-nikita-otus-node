@@ -1,0 +1,30 @@
+const express = require('express')
+const bcrypt = require('bcryptjs')
+const User = require('../../models/user.model')
+const registerApiRouter = express.Router()
+registerApiRouter.use(express.json())
+
+registerApiRouter.post('/', async (req, res) => {
+  const { username, email, password } = req.body
+  console.log(username, email, password)
+  if (!username || !email || !password) {
+    return res
+      .status(400)
+      .json({ message: 'Username, Email and password are required.' })
+  }
+  // check for duplicate usernames in the db
+  if ((await User.find({ $or: [{ username }, { email }] })).length) {
+    return res.sendStatus(409)
+  }
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10)
+    const newUser = new User({ username, email, password: hashedPassword })
+    res.status(201).json(newUser)
+  } catch (err) {
+    res.status(500).json({ message: err.message })
+  }
+})
+
+module.exports = {
+  registerApiRouter
+}

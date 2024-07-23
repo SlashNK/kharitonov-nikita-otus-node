@@ -6,9 +6,13 @@ const { exercisesApiRouter } = require('./exercises')
 const { workoutBlocksApiRouter } = require('./workout-blocks')
 const { workoutTemplatesApiRouter } = require('./workout-templates')
 const { workoutSessionsApiRouter } = require('./workout-sessions')
+const { registerApiRouter } = require('./register')
+const { authApiRouter } = require('./auth')
 
 const router = express.Router()
 
+router.use('/register', registerApiRouter)
+router.use('/auth', authApiRouter)
 router.use('/users', usersApiRouter)
 router.use('/exercises', exercisesApiRouter)
 router.use('/workout-blocks', workoutBlocksApiRouter)
