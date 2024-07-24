@@ -2,10 +2,10 @@ const express = require('express')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const User = require('../../models/user.model')
-const authTokenApiRouter = express.Router()
-authTokenApiRouter.use(express.json())
+const authApiRouter = express.Router()
+authApiRouter.use(express.json())
 
-authTokenApiRouter.post('/', async (req, res) => {
+authApiRouter.post('/', async (req, res) => {
   const { username, password } = req.body
   if (!username || !password) {
     return res
@@ -41,5 +41,5 @@ authTokenApiRouter.post('/', async (req, res) => {
 })
 
 module.exports = {
-  authApiRouter: authTokenApiRouter
+  authApiRouter
 }
