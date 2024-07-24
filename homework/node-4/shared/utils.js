@@ -1,4 +1,5 @@
 const { v4: uuidv4 } = require('uuid')
+const bcrypt = require('bcryptjs')
 const {
   DEFAULT_QUERY_LIMIT,
   DEFAULT_QUERY_PAGE
@@ -14,7 +15,13 @@ const paginateArray = (array, limit, page) => {
   return array.slice(startIndex, endIndex)
 }
 
+const saltPassword = async (password) => {
+  const hashedPassword = await bcrypt.hash(password, 10)
+  return hashedPassword
+}
+
 module.exports = {
   generateId,
-  paginateArray
+  paginateArray,
+  saltPassword
 }

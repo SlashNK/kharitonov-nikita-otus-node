@@ -31,7 +31,7 @@ describe('Workout Session API CRUD operations', () => {
     )
     const user = await request(app)
       .post('/api/users')
-      .send({ username: 'testuser', email: 'test@example.com' })
+      .send({ username: 'testuser', email: 'test@example.com', password: 'test' })
     userId = user.body._id
     const exercise = await request(app).post('/api/exercises').send({
       name: 'Squat',

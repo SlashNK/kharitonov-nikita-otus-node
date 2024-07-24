@@ -1,6 +1,7 @@
 const express = require('express')
 const bcrypt = require('bcryptjs')
 const User = require('../../models/user.model')
+const { saltPassword } = require('../../shared/utils')
 const registerApiRouter = express.Router()
 registerApiRouter.use(express.json())
 
@@ -17,8 +18,8 @@ registerApiRouter.post('/', async (req, res) => {
     return res.sendStatus(409)
   }
   try {
-    const hashedPassword = await bcrypt.hash(password, 10)
-    const newUser = new User({ username, email, password: hashedPassword })
+    const newUser = new User({ username, email, password: await saltPassword(password) })
+    newUser.save()
     res.status(201).json(newUser)
   } catch (err) {
     res.status(500).json({ message: err.message })
