@@ -1,0 +1,55 @@
+### Get Data
+
+#content-type: application/json
+GET http://localhost:3001/books
+
+###
+
+# найти все книги за авторством Пушкина
+GET http://localhost:3001/books?author=Пушкин
+
+###
+GET http://localhost:3001/books/byAuthor?author=Пушкин
+
+# /books/byAuthor/:name
+GET http://localhost:3001/books/byAuthor/Пушкин
+###
+GET http://localhost:3001/books/2
+
+
+###
+GET http://localhost:3001/books/1/author
+
+###
+delete http://localhost:3001/books/3
+
+###
+
+POST http://localhost:3001/books
+content-type: application/json
+
+{
+    "title":"Евгений Онегин",
+    "isbn":"ISBN_2",
+    "author": {
+        "name":"Евгений Онегин"
+    }
+}
+###
+
+PUT http://localhost:3001/books/2
+content-type: application/json
+
+{
+    "title":"Капитанская дочка",
+    "isbn":"ISBN_4"
+}
+
+### 
+POST http://localhost:3001/books/1234/sendMail
+content-type: application/json
+
+{
+    "reciever":"Улица Ленина д.1"
+}
+###
