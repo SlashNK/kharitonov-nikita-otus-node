@@ -1,5 +1,5 @@
 const express = require('express')
-const { paginateArray } = require('../../shared/utils')
+const { paginateArray, saltPassword } = require('../../shared/utils')
 const User = require('../../models/user.model')
 const usersApiRouter = express.Router()
 usersApiRouter.use(express.json())
@@ -24,12 +24,12 @@ usersApiRouter.get('/:id', async (req, res) => {
 })
 
 usersApiRouter.post('/', async (req, res) => {
-  const { username, email } = req.body
+  const { username, email, password } = req.body
   try {
-    if (!username || !email) {
+    if (!username || !email || !password) {
       return res.status(400).json({ error: 'Validation failed' })
     }
-    const newUser = new User({ username, email })
+    const newUser = new User({ username, email, password: await saltPassword(password) })
     await newUser.save()
     res.status(201).json(newUser)
   } catch (e) {

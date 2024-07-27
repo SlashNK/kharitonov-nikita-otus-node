@@ -25,7 +25,8 @@ describe('User API CRUD operations', () => {
         .post('/api/users')
         .send({
           username: `User ${i}`,
-          email: `user${i}@example.com`
+          email: `user${i}@example.com`,
+          password: 'password123'
         })
       users.push(response.body._id)
     }
@@ -40,7 +41,11 @@ describe('User API CRUD operations', () => {
   it('should create a new user', async () => {
     const response = await request(app)
       .post('/api/users')
-      .send({ username: 'New User', email: 'user@example.com' })
+      .send({
+        username: 'New User',
+        email: 'user@example.com',
+        password: 'password123'
+      })
 
     expect(response.status).toBe(201)
     expect(response.body).toHaveProperty('_id')
