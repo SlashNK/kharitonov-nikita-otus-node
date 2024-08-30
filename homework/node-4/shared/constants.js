@@ -1,7 +1,0 @@
-const DEFAULT_QUERY_LIMIT = 10
-const DEFAULT_QUERY_PAGE = 1
-
-module.exports = {
-  DEFAULT_QUERY_LIMIT,
-  DEFAULT_QUERY_PAGE
-}
