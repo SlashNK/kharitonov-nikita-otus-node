@@ -1,24 +1,32 @@
-import { IsString, IsOptional, IsEmail, IsEnum } from 'class-validator';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { Role } from '../enums/roles.enum';
-import { OmitType, PartialType } from '@nestjs/mapped-types';
+import { IUser } from '../interfaces/user.interface';
+import { Exercise } from './exercise.entity';
 
-export class User implements User {
-  @IsString()
-  @IsOptional()
-  id?: string;
-  @IsString()
+@Entity()
+export class User implements IUser {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+
+  @Column()
   username: string;
-  @IsEmail()
+
+  @Column({ unique: true })
   email: string;
-  @IsString()
+
+  @Column()
   password: string;
-  @IsString()
-  @IsOptional()
-  refreshToken?: string;
-  @IsEnum(Role)
+
+  @Column({ nullable: true })
+  refreshToken: string;
+
+  @Column({
+    type: 'enum',
+    enum: Role,
+    default: Role.USER,
+  })
   role: Role;
+
+  @OneToMany(() => Exercise, (exercise) => exercise.user, { eager: true })
+  exercises: Exercise[];
 }
-
-export class CreateUserDto extends OmitType(User, ['id'] as const) {}
-
-export class UpdateUserDto extends PartialType(CreateUserDto) {}

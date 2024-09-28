@@ -1,58 +1,64 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { JwtPayload } from 'src/auth/jwt/jwt-payload.interface';
-import {
-  Exercise,
-  CreateExerciseDto,
-  UpdateExerciseDto,
-} from 'src/shared/entities/exercise.entity';
-import { v4 as uuidv4 } from 'uuid';
+import { Exercise } from 'src/shared/entities/exercise.entity';
+import { CreateExerciseDto } from './dto/create-exercise.dto';
+import { UpdateExerciseDto } from './dto/update-exercise.dto';
 
 @Injectable()
 export class ExerciseService {
-  private Exercises: Exercise[] = [];
+  constructor(
+    @InjectRepository(Exercise)
+    private readonly exerciseRepository: Repository<Exercise>,
+  ) {}
 
-  create(createExerciseDto: CreateExerciseDto): Exercise {
-    const newExercise: Exercise = {
-      id: uuidv4(),
-      ...createExerciseDto,
-    };
-    this.Exercises.push(newExercise);
-    return newExercise;
+  // Create a new exercise
+  async create(createExerciseDto: CreateExerciseDto): Promise<Exercise> {
+    const newExercise = this.exerciseRepository.create(createExerciseDto);
+    return this.exerciseRepository.save(newExercise);
   }
 
+  // Get all exercises
   async findAll(): Promise<Exercise[]> {
-    return this.Exercises;
-  }
-  async findForUser(user?: JwtPayload): Promise<Exercise[]> {
-    return this.Exercises.filter(
-      (exercise) => exercise.author === user.username,
-    );
+    return this.exerciseRepository.find({ relations: ['user'] });
   }
 
+  // Find exercises for a specific user (based on JWT payload)
+  async findForUser(user?: JwtPayload): Promise<Exercise[]> {
+    return this.exerciseRepository.find({
+      where: { user: { username: user.username } },
+      relations: ['user'],
+    });
+  }
+
+  // Get a single exercise by ID
   async findOne(id: string): Promise<Exercise> {
-    const Exercise = this.Exercises.find((Exercise) => Exercise.id === id);
-    if (!Exercise) {
+    const exercise = await this.exerciseRepository.findOne({
+      where: { id },
+      relations: ['user'],
+    });
+    if (!exercise) {
       throw new NotFoundException(`Exercise with ID ${id} not found`);
     }
-    return Exercise;
+    return exercise;
   }
 
+  // Update an exercise by ID
   async update(
     id: string,
     updateExerciseDto: UpdateExerciseDto,
   ): Promise<Exercise> {
-    const Exercise = this.findOne(id);
-    Object.assign(Exercise, updateExerciseDto);
-    return Exercise;
+    const exercise = await this.findOne(id);
+    Object.assign(exercise, updateExerciseDto);
+    return this.exerciseRepository.save(exercise);
   }
 
+  // Delete an exercise by ID
   async remove(id: string): Promise<void> {
-    const ExerciseIndex = this.Exercises.findIndex(
-      (Exercise) => Exercise.id === id,
-    );
-    if (ExerciseIndex === -1) {
+    const result = await this.exerciseRepository.delete({ id });
+    if (result.affected === 0) {
       throw new NotFoundException(`Exercise with ID ${id} not found`);
     }
-    this.Exercises.splice(ExerciseIndex, 1);
   }
 }

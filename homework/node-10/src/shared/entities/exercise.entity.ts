@@ -1,25 +1,21 @@
-import { IsString, IsNotEmpty, IsOptional } from 'class-validator';
-import { OmitType, PartialType } from '@nestjs/mapped-types';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { User } from './user.entity';
+import { IExercise } from '../interfaces/exercise.interface';
 
-export class Exercise {
-  @IsString()
-  @IsOptional()
-  id?: string;
-  @IsString()
-  @IsNotEmpty()
+@Entity()
+export class Exercise implements IExercise {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+
+  @Column()
   name: string;
-  @IsString()
-  @IsNotEmpty()
+
+  @Column()
   description: string;
-  @IsString()
-  @IsNotEmpty()
+
+  @Column()
   type: string;
-  @IsString()
-  @IsOptional()
-  author: User['username'];
+
+  @ManyToOne(() => User, (user) => user.exercises, { eager: false })
+  user: User;
 }
-
-export class CreateExerciseDto extends OmitType(Exercise, ['id'] as const) {}
-
-export class UpdateExerciseDto extends PartialType(CreateExerciseDto) {}

@@ -7,27 +7,29 @@ import {
   Res,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreateUserDto } from 'src/shared/entities/user.entity';
-import { Response } from 'express'; // Import Response from express
+import { Response } from 'express';
+import { RegisterDto } from './shared/dto/register.dto';
+import { LoginDto } from './shared/dto/login.dto';
+import { RefreshTokenDto } from './shared/dto/refresh-token.dto';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('register')
-  async register(@Body() createUserDto: CreateUserDto) {
-    const { username, email, password } = createUserDto;
+  async register(@Body() registerDto: RegisterDto) {
+    const { username, email, password } = registerDto;
     if (!username || !email || !password) {
       throw new BadRequestException(
         'Username, Email, and Password are required',
       );
     }
-    return this.authService.register(createUserDto);
+    return this.authService.register(registerDto);
   }
 
   @Post('login')
-  async login(@Body() body: { username: string; password: string }) {
-    const { username, password } = body;
+  async login(@Body() loginDto: LoginDto) {
+    const { username, password } = loginDto;
     if (!username || !password) {
       throw new UnauthorizedException('Username and Password are required');
     }
@@ -35,8 +37,8 @@ export class AuthController {
   }
 
   @Post('refresh-token')
-  async refreshToken(@Body() body: { refreshToken: string }) {
-    const { refreshToken } = body;
+  async refreshToken(@Body() refreshTokenDto: RefreshTokenDto) {
+    const { refreshToken } = refreshTokenDto;
     if (!refreshToken) {
       throw new UnauthorizedException('Refresh token is required');
     }
@@ -44,8 +46,8 @@ export class AuthController {
   }
 
   @Post('logout')
-  async logout(@Body() body: { refreshToken: string }, @Res() res: Response) {
-    const { refreshToken } = body;
+  async logout(@Body() refreshTokenDto: RefreshTokenDto, @Res() res: Response) {
+    const { refreshToken } = refreshTokenDto;
     if (!refreshToken) {
       throw new UnauthorizedException('Refresh token is required');
     }

@@ -8,16 +8,15 @@ import {
   Param,
   UseGuards,
 } from '@nestjs/common';
-import { UserService } from './user.service';
-import {
-  CreateUserDto,
-  UpdateUserDto,
-  User,
-} from 'src/shared/entities/user.entity';
+import { User } from 'src/shared/entities/user.entity';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from 'src/shared/guards/roles.guard';
 import { Roles } from 'src/shared/decorators/roles.decorator';
 import { Role } from 'src/shared/enums/roles.enum';
+import { UserService } from './user.service';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Roles(Role.ADMIN)
 @Controller('users')
