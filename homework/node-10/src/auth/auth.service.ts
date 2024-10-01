@@ -9,38 +9,29 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
 import { UserService } from 'src/user/user.service';
 import { RegisterDto } from './shared/dto/register.dto';
-import { Role } from 'src/shared/enums/roles.enum';
 
 @Injectable()
 export class AuthService {
   constructor(
     private userService: UserService,
     private jwtService: JwtService,
-  ) {
-    console.log(process.env.ACCESS_TOKEN_SECRET_KEY);
-  }
+  ) {}
+
   async register(registerDto: RegisterDto): Promise<any> {
     const { username, email, password } = registerDto;
-
-    // Check if the username or email already exists
     const userExists = (await this.userService.findAll()).find(
       (user) => user.email === email || user.username === username,
     );
-    ``;
     if (userExists) {
       throw new ConflictException('Username or Email already exists');
     }
-
-    // Hash the password
     const hashedPassword = await saltPassword(password);
 
     try {
-      // Create and save the new user
       const newUser = await this.userService.create({
         username,
         email,
         password: hashedPassword,
-        role: Role.USER,
       });
       return newUser;
     } catch (error) {
@@ -73,11 +64,15 @@ export class AuthService {
 
     return { accessToken, refreshToken };
   }
+
   async refreshToken(refreshToken: string): Promise<any> {
-    const user = await this.userService.findByRefreshToken(refreshToken);
+    const user = (await this.userService.findAll()).find(
+      (user) => user.refreshToken === refreshToken,
+    );
     if (!user) {
       throw new UnauthorizedException('Invalid refresh token');
     }
+
     try {
       const payload = this.jwtService.verify(refreshToken);
       const accessToken = this.jwtService.sign(
@@ -90,12 +85,14 @@ export class AuthService {
       );
       return { accessToken };
     } catch (e) {
-      console.log(e);
       throw new UnauthorizedException('Invalid refresh token');
     }
   }
+
   async logout(refreshToken: string): Promise<void> {
-    const user = await this.userService.findByRefreshToken(refreshToken);
+    const user = (await this.userService.findAll()).find(
+      (user) => user.refreshToken === refreshToken,
+    );
     if (!user) {
       throw new UnauthorizedException('Invalid refresh token');
     }
