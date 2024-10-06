@@ -1,0 +1,95 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Exercise {
+  id: String!
+  name: String!
+  description: String!
+  type: String!
+  user: User!
+}
+
+type User {
+  id: String!
+  username: String!
+  email: String!
+  password: String!
+  refreshToken: String
+  role: Role!
+  exercises: [Exercise!]!
+}
+
+"""The role of the user"""
+enum Role {
+  USER
+  ADMIN
+}
+
+type AuthTypeDto {
+  accessToken: String!
+  refreshToken: String!
+}
+
+type Query {
+  findAllUsers: [User!]!
+  findUser(id: String!): User!
+  status: String!
+  findAll: [Exercise!]!
+  findOne(id: String!): Exercise!
+}
+
+type Mutation {
+  createUser(createUserDto: CreateUserDto!): User!
+  updateUser(id: String!, updateUserDto: UpdateUserDto!): User!
+  removeUser(id: String!): Boolean!
+  register(registerDto: RegisterDto!): Boolean!
+  login(loginDto: LoginDto!): AuthTypeDto!
+  refreshToken(refreshTokenDto: RefreshTokenDto!): AuthTypeDto!
+  logout(refreshTokenDto: RefreshTokenDto!): Boolean!
+  create(createExerciseDto: CreateExerciseDto!): Exercise!
+  update(id: String!, updateExerciseDto: UpdateExerciseDto!): Exercise!
+  remove(id: String!): Boolean!
+}
+
+input CreateUserDto {
+  username: String!
+  email: String!
+  password: String!
+}
+
+input UpdateUserDto {
+  username: String
+  email: String
+  password: String
+  role: Role
+  refreshToken: String
+}
+
+input RegisterDto {
+  username: String!
+  email: String!
+  password: String!
+}
+
+input LoginDto {
+  username: String!
+  password: String!
+}
+
+input RefreshTokenDto {
+  refreshToken: String!
+}
+
+input CreateExerciseDto {
+  name: String!
+  description: String!
+  type: String!
+  user: CreateUserDto
+}
+
+input UpdateExerciseDto {
+  name: String
+  description: String
+  type: String
+}

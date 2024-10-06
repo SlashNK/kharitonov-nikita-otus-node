@@ -9,6 +9,7 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
 import { UserService } from 'src/user/user.service';
 import { RegisterDto } from './shared/dto/register.dto';
+import { AuthTypeDto } from './shared/dto/auth-type.dto';
 
 @Injectable()
 export class AuthService {
@@ -33,13 +34,14 @@ export class AuthService {
         email,
         password: hashedPassword,
       });
+      console.log(newUser);
       return newUser;
     } catch (error) {
       throw new InternalServerErrorException(error.message);
     }
   }
 
-  async login(username: string, password: string): Promise<any> {
+  async login(username: string, password: string): Promise<AuthTypeDto> {
     const user = (await this.userService.findAll()).find(
       (user) => user.username === username,
     );
@@ -57,7 +59,7 @@ export class AuthService {
       email: user.email,
       role: user.role,
     };
-    const accessToken = this.jwtService.sign(payload, { expiresIn: '30s' });
+    const accessToken = this.jwtService.sign(payload, { expiresIn: '5m' });
     const refreshToken = this.jwtService.sign(payload, { expiresIn: '1d' });
 
     await this.userService.update(user.id, { refreshToken });
@@ -65,7 +67,7 @@ export class AuthService {
     return { accessToken, refreshToken };
   }
 
-  async refreshToken(refreshToken: string): Promise<any> {
+  async refreshToken(refreshToken: string): Promise<AuthTypeDto> {
     const user = (await this.userService.findAll()).find(
       (user) => user.refreshToken === refreshToken,
     );
@@ -83,7 +85,7 @@ export class AuthService {
         },
         { expiresIn: '30s' },
       );
-      return { accessToken };
+      return { refreshToken, accessToken };
     } catch (e) {
       throw new UnauthorizedException('Invalid refresh token');
     }
