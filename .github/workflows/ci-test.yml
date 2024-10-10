@@ -3,9 +3,10 @@ name: Docker Build Test
 on:
   push:
     branches:
-      - ci-test
+      - main
   pull_request:
     branches:
+      - main
       - ci-test
 
 jobs:
@@ -19,7 +20,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: "18"
+          node-version: "20"  # Use Node.js 20
 
       - name: Install dependencies
         working-directory: ./homework/node-10
