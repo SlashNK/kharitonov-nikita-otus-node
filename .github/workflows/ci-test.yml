@@ -3,10 +3,10 @@ name: Docker Build Test
 on:
   push:
     branches:
-      - main
+      - ci-test
   pull_request:
     branches:
-      - main
+      - ci-test
 
 jobs:
   build:
