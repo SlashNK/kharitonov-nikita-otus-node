@@ -8,6 +8,9 @@ import { ExerciseModule } from 'src/exercise/exercise.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Exercise } from 'src/shared/entities/exercise.entity';
 import { User } from 'src/shared/entities/user.entity';
+import { GraphQLModule } from '@nestjs/graphql';
+import { ApolloDriverConfig, ApolloDriver } from '@nestjs/apollo';
+import { join } from 'path';
 
 @Module({
   controllers: [AppController],
@@ -34,6 +37,11 @@ import { User } from 'src/shared/entities/user.entity';
       }),
     }),
     TypeOrmModule.forFeature([User, Exercise]),
+    GraphQLModule.forRoot<ApolloDriverConfig>({
+      driver: ApolloDriver,
+      autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+      playground: true,
+    }),
   ],
 })
 export class AppModule {}
