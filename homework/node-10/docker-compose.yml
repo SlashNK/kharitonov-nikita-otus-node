@@ -9,12 +9,32 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_DATABASE}
     ports:
-      - "${DB_PORT}:${DB_PORT}"  # Maps the port from the .env file
-    volumes:
-      - ./db_data:/var/lib/postgresql/data
+      - '${DB_PORT}:${DB_PORT}'
     env_file:
       - .env.db
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME}"]
+      test: ['CMD-SHELL', 'pg_isready -U ${DB_USERNAME}']
       interval: 10s
       retries: 5
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nestjs_app
+    environment:
+      ACCESS_TOKEN_SECRET_KEY: ${ACCESS_TOKEN_SECRET_KEY}
+      REFRESH_TOKEN_SECRET_KEY: ${REFRESH_TOKEN_SECRET_KEY}
+      DB_HOST: db
+      DB_PORT: ${DB_PORT}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_DATABASE: ${DB_DATABASE}
+
+    ports:
+      - '3000:3000'
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - .env

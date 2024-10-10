@@ -1,12 +1,15 @@
+import { Field, InputType } from '@nestjs/graphql';
 import { IsNotEmpty, IsString } from 'class-validator';
-import { IUser } from 'src/shared/interfaces/user.interface';
 
+@InputType()
 export class LoginDto {
+  @Field(() => String)
   @IsNotEmpty()
   @IsString()
-  username: IUser['username'];
+  username: string;
 
+  @Field(() => String)
   @IsNotEmpty()
   @IsString()
-  password: IUser['password'];
+  password: string;
 }
