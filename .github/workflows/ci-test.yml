@@ -12,8 +12,12 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
+      - name: Log Docker Username (Masked)
+        run: |
+          echo "DOCKER_USERNAME starts with: ${DOCKER_USERNAME:0:4}****"
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       - name: Checkout code
         uses: actions/checkout@v3
 
