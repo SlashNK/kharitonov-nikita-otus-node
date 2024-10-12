@@ -20,7 +20,7 @@ import { join } from 'path';
     AuthModule,
     ExerciseModule,
     ConfigModule.forRoot({
-      envFilePath: ['env', '.env.db'],
+      envFilePath: ['env'],
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
