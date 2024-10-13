@@ -1,0 +1,14 @@
+{
+  "name": "project-compressor",
+  "version": "1.0.0",
+  "description": "CLI tool for compressing node projects",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Nikita Kharitonov nkhari.dev@gmail.com",
+  "license": "ISC",
+  "dependencies": {
+    "commander": "^12.1.0"
+  }
+}
